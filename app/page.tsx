@@ -1,6 +1,9 @@
 import { auth, signIn, signOut } from "@/auth";
+import ApiExample from "@/components/api-example";
+import ClientExample from "@/components/client-example";
+import { SessionProvider } from "next-auth/react";
 
-function SignIn() {
+function SignInServer() {
   return (
     <form
       className="border border-blue-500 p-4 rounded-md bg-blue-100"
@@ -20,7 +23,7 @@ function SignIn() {
   );
 }
 
-function SignOut({ children }: { children: React.ReactNode }) {
+function SignOutServer({ children }: { children: React.ReactNode }) {
   return (
     <form
       className="border border-red-500 p-4 rounded-md bg-red-100"
@@ -45,9 +48,27 @@ export default async function Page() {
   let user = session?.user?.email;
 
   return (
-    <section className="max-w-3xl mx-auto p-4">
-      <h1>Home</h1>
-      <div>{user ? <SignOut>{`Welcome ${user}`}</SignOut> : <SignIn />}</div>
-    </section>
+    <div className="max-w-3xl mx-auto p-4 space-y-8">
+      <section>
+        <h1>Server</h1>
+        <div>
+          {user ? (
+            <SignOutServer>{`Welcome ${user}`}</SignOutServer>
+          ) : (
+            <SignInServer />
+          )}
+        </div>
+      </section>
+      <section>
+        <h1>Client</h1>
+        <SessionProvider session={session}>
+          <ClientExample />
+        </SessionProvider>
+      </section>
+      <section>
+        <h1>Protected API</h1>
+        <ApiExample />
+      </section>
+    </div>
   );
 }
